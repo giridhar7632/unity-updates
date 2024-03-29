@@ -1,83 +1,36 @@
-"use client";
-
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { supabase } from "~/lib/client";
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { buttonVariants } from "~/components/ui/button";
+import { Metadata } from "next";
+import { getReports } from "../actions";
+import ReportItem from "./ReportItem";
 
-type InventoryItem = {
-  name: string;
-  price: number;
-  stock: number;
+export const metadata: Metadata = {
+  title: "Reports",
 };
 
-export default function InventoryItems() {
-  // const [inventory, setInventory] = useState<InventoryItem[]>([]);
-
-  // useEffect(() => {
-  //   fetchItems();
-  // }, []);
-
-  // const fetchItems = async () => {
-  //   const { data: inventory } = await supabase.from("inventory").select();
-  //   if (inventory) setInventory(inventory);
-  // };
-
-  // const handleDelete = async (name) => {
-  //   console.log(`Deleting product: ${name}`);
-  //   const { data, error } = await supabase
-  //     .from("inventory")
-  //     .delete()
-  //     .match({ name: name });
-  //   if (error) {
-  //     console.error("Error deleting item:", error);
-  //   }
-  //   fetchItems();
-  // };
+export default async function ReportsItems() {
+  const reports = await getReports();
 
   return (
-    <div className="flex h-full flex-col items-center justify-evenly gap-16 pt-16">
-      <div className="flex flex-col gap-16">
-        <h1 className="text-5xl font-medium underline decoration-wavy underline-offset-8">
-          Inventory
-        </h1>
-        <div className="flex justify-center">
-          <Link href={"/report/new"} className={buttonVariants()}>
-            Create new report
-          </Link>
-        </div>
+    <main className="py-4">
+      <div className="flex w-full items-center justify-between">
+        <h1 className="text-3xl font-bold">Reports</h1>
+
+        <Button asChild>
+          <Link href="/report/new">Add Report</Link>
+        </Button>
       </div>
-      {/* <div className="flex flex-col gap-8 overflow-y-auto">
-        {inventory && inventory.length > 0 ? (
-          inventory.map((item) => (
-            <Card key={item.name} className="w-[350px] hover:bg-slate-50">
-              <CardHeader className="flex flex-row justify-between">
-                <CardTitle className="text-2xl font-bold">
-                  {item.name}
-                </CardTitle>
-                <Button onClick={() => handleDelete(item.name)}>
-                  <img
-                    src="/icons/trash.svg"
-                    alt="Delete"
-                    width={20}
-                    height={20}
-                    className="invert filter"
-                  />
-                </Button>
-              </CardHeader>
-              <CardContent className="flex justify-between text-xl">
-                <div className="font-bold">${item.price}</div>
-                <div className="font-bold">In stock: {item.stock}</div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <></>
-        )}
-      </div> */}
-    </div>
+      <p className="mt-4 text-neutral-500 dark:text-neutral-400">
+        Here's the list of reports received!
+      </p>
+      <ul>
+        {reports.map((report) => (
+          <li key={report.id} className="mt-4">
+            <ReportItem {...report} />
+          </li>
+        ))}
+      </ul>
+    </main>
   );
 }

@@ -6,97 +6,141 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { supabase } from "~/lib/client";
 import { useRouter } from "next/navigation";
+import { Textarea } from "~/components/ui/textarea";
+import { Label } from "~/components/ui/label";
+import { MapDrawer } from "~/components/MapComponents";
+import { useToast } from "~/components/ui/use-toast";
+import { addReport } from "~/app/actions";
 
 const formSchema = z.object({
+  lat: z.number().max(180),
+  lon: z.number().max(180),
   name: z
     .string()
     .min(2, "Minimum characters are 2!")
     .max(20, "Maximum characters are 20!"),
-  price: z.string().refine((price) => !isNaN(parseFloat(price)), {
-    message: "Prices start from 1$!",
-  }),
-  stock: z.string().refine((stock) => !isNaN(parseFloat(stock)), {
-    message: "You must have at least 1 product!",
-  }),
+  number: z.string().min(10).max(14),
+  category: z.string(),
+  description: z.string(),
 });
 
 const AddForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      lat: 0,
+      lon: 0,
       name: "",
-      price: "",
-      stock: "",
+      number: "",
+      category: "",
+      description: "",
     },
   });
 
   const router = useRouter();
+  const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // await supabase.from("inventory").insert(values);
-    console.log({ values });
-    router.push("/report");
+    try {
+      await addReport(values);
+      toast({ description: "Your report has been submitted successfully" });
+      router.push("/report");
+    } catch (error) {
+      toast({
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem submitting your report.",
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-8"
+        className="my-4 flex flex-col space-y-3"
       >
+        <Label className="text-sm">Location</Label>
+        <MapDrawer setValue={form.setValue} />
+        <p className="text-xs text-neutral-500">
+          Show us at which location you need help
+        </p>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xl">Name</FormLabel>
+              <FormLabel className="text-sm">Name</FormLabel>
               <FormControl>
-                <Input placeholder="Apple" {...field} />
+                <Input placeholder="Captian marvel" {...field} />
               </FormControl>
-              <FormDescription className="text-base">
-                The name of your product.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="price"
+          name="number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xl">Price</FormLabel>
+              <FormLabel className="text-sm">Phone</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="100" {...field} />
+                <Input type="text" placeholder="(101) 800-6353" {...field} />
               </FormControl>
-              <FormDescription className="text-base">
-                The price of your product.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="stock"
+          name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xl">In Stock</FormLabel>
+              <FormLabel className="text-sm">Category</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select report type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="medicine">Medical</SelectItem>
+                  <SelectItem value="food">Food</SelectItem>
+                  <SelectItem value="crime">Crime</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm">Description</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="10" {...field} />
+                <Textarea
+                  placeholder="Tell us a little bit about what happened..."
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription className="text-base">
-                The number of products you have.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

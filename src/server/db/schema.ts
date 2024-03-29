@@ -8,6 +8,8 @@ import {
   serial,
   timestamp,
   varchar,
+  text,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -16,13 +18,18 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `shop-scan_${name}`);
+export const createTable = pgTableCreator((name) => `unity-updates_${name}`);
 
 export const posts = createTable(
   "post",
   {
     id: serial("id").primaryKey(),
+    lat: numeric("lat").notNull(),
+    lon: numeric("lon").notNull(),
     name: varchar("name", { length: 256 }),
+    number: text("number").notNull(),
+    category: text("category").notNull(),
+    description: text("description"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -30,5 +37,5 @@ export const posts = createTable(
   },
   (example) => ({
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );

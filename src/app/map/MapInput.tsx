@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import MapComponent from "~/components/MapComponent";
+import { MapComponent } from "~/components/MapComponents";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({

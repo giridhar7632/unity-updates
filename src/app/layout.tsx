@@ -1,15 +1,12 @@
 import "~/styles/globals.css";
 
+import Link from "next/link";
 import { Poppins } from "next/font/google";
 import { Metadata, Viewport } from "next";
-import Link from "next/link";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { Icons } from "~/components/Icons";
+import { ThemeProvider } from "~/components/theme-provider";
+import Header from "~/components/header";
+import { Toaster } from "~/components/ui/toaster";
 
 const font = Poppins({
   weight: ["400", "500", "700"],
@@ -18,7 +15,7 @@ const font = Poppins({
 
 const APP_NAME = "Unity Updates";
 const APP_DEFAULT_TITLE = "Unity Updates";
-const APP_TITLE_TEMPLATE = "%s - Haitis";
+const APP_TITLE_TEMPLATE = "%s - Haitis Unity Updates";
 const APP_DESCRIPTION = "Be united and safe!";
 
 export const metadata: Metadata = {
@@ -68,49 +65,37 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${font.className}`}>
-        <div className="h-4/5">{children}</div>
-        <div className="fixed h-1/5 w-full p-8 text-primary">
-          {/*Footer*/}
-          <div className="flex h-full cursor-pointer flex-row items-center justify-evenly rounded-2xl border-4 border-black">
-            <Link href="/">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Icons.home className="h-8 w-8" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Home</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
-            <Link href="/map">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Icons.map className="h-8 w-8" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Map</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
-            <Link href="/report">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Icons.report className="h-8 w-8" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Report</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
+      <body className={`relative ${font.className}`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <div className="mx-auto w-full max-w-4xl px-4 md:px-8">
+            {children}
           </div>
-        </div>
+          <Toaster />
+          <footer className="z-100 fixed bottom-0 w-full border-t border-border/40 bg-background/95 p-4 text-primary backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <nav className="mx-auto flex max-w-2xl justify-between">
+              <Link className="flex flex-col items-center" href="/">
+                <Icons.home className="h-6 w-6" />
+                <div className="mt-1 text-center text-xs leading-3">Home</div>
+              </Link>
+
+              <Link className="flex flex-col items-center" href="/map">
+                <Icons.map className="h-6 w-6" />
+                <div className="mt-1 text-center text-xs leading-3">Map</div>
+              </Link>
+
+              <Link className="flex flex-col items-center" href="/report">
+                <Icons.report className="h-6 w-6" />
+                <div className="mt-1 text-center text-xs leading-3">Report</div>
+              </Link>
+            </nav>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );
