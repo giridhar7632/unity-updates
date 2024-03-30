@@ -13,7 +13,7 @@ export default function Header() {
     path && path.charAt(0).toUpperCase() + path.slice(1);
 
   return (
-    <header className="border-b border-border/40 bg-background/95 p-4 text-primary backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 p-4 text-primary backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-4xl items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
