@@ -1,12 +1,12 @@
 import "~/styles/globals.css";
 
-import Link from "next/link";
 import { Poppins } from "next/font/google";
 import { Metadata, Viewport } from "next";
-import { Icons } from "~/components/Icons";
 import { ThemeProvider } from "~/components/theme-provider";
 import Header from "~/components/header";
 import { Toaster } from "~/components/ui/toaster";
+import Footer from "~/components/footer";
+// import Push from "~/components/push";
 
 const font = Poppins({
   weight: ["400", "500", "700"],
@@ -73,28 +73,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <div className="mx-auto mb-[100px] w-full max-w-4xl overflow-y-auto overflow-x-hidden px-4 md:px-8">
+          <div className="mx-auto mb-[100px] w-full max-w-4xl overflow-x-hidden px-4 md:px-8">
             {children}
           </div>
           <Toaster />
-          <footer className="z-100 fixed bottom-0 h-[80px] w-full border-t border-border/40 bg-background/95 p-4 text-primary backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <nav className="mx-auto flex max-w-2xl justify-between">
-              <Link className="flex flex-col items-center" href="/">
-                <Icons.home className="h-6 w-6" />
-                <div className="mt-1 text-center text-xs leading-3">Home</div>
-              </Link>
-
-              <Link className="flex flex-col items-center" href="/map">
-                <Icons.map className="h-6 w-6" />
-                <div className="mt-1 text-center text-xs leading-3">Map</div>
-              </Link>
-
-              <Link className="flex flex-col items-center" href="/report">
-                <Icons.report className="h-6 w-6" />
-                <div className="mt-1 text-center text-xs leading-3">Report</div>
-              </Link>
-            </nav>
-          </footer>
+          <Footer />
+          {/* <Push /> */}
         </ThemeProvider>
       </body>
     </html>

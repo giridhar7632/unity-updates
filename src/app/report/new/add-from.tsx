@@ -27,6 +27,7 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/components/ui/use-toast";
 import { addReport } from "~/app/actions";
 import dynamic from "next/dynamic";
+import { Icons } from "~/components/Icons";
 
 const MapDrawer = dynamic(() => import("~/components/MapDrawer"), {
   ssr: false,
@@ -123,10 +124,30 @@ const AddForm = () => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="medicine">Medical</SelectItem>
-                  <SelectItem value="food">Food</SelectItem>
-                  <SelectItem value="crime">Crime</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="medicine">
+                    <div className="flex items-center gap-2">
+                      <Icons.medicine className="h-5 w-5" />
+                      <span>Medical</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="food">
+                    <div className="flex items-center gap-2">
+                      <Icons.food className="h-5 w-5" />
+                      <span>Food</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="crime">
+                    <div className="flex items-center gap-2">
+                      <Icons.crime className="h-5 w-5" />
+                      <span>Crime</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="other">
+                    <div className="flex items-center gap-2">
+                      <Icons.other className="h-5 w-5" />
+                      <span>Other</span>
+                    </div>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

@@ -63,7 +63,7 @@ export default function ReportItem({
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>
-          added {formatDistanceToNow(createdAt)}
+          added {formatDistanceToNow(createdAt)} ago
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">

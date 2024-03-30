@@ -22,13 +22,12 @@ import {
 import { Button } from "~/components/ui/button";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
-import { type UseFormSetValue } from "react-hook-form";
 import { Icons } from "./Icons";
 import { useToast } from "./ui/use-toast";
 
-interface MapComponentProps {
+export interface MapComponentProps {
   initialPosition?: L.LatLngExpression;
-  setValue: UseFormReturn<
+  setValue?: UseFormReturn<
     {
       number: string;
       lat: number;
@@ -48,7 +47,7 @@ const iconOptions: L.IconOptions = {
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 };
-const customIcon: L.Icon = L.icon(iconOptions);
+export const customIcon: L.Icon = L.icon(iconOptions);
 
 export function DraggableMarker({
   initialPosition = [18.514707, -72.276647],

@@ -5,6 +5,15 @@
 await import("./src/env.js");
 const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
+  register: true,
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  cacheStartUrl: true,
+  dynamicStartUrl: true,
+  extendDefaultRuntimeCaching: true,
+  workboxOptions: {
+    skipWaiting: true,
+  }
 });
 
 /** @type {import("next").NextConfig} */

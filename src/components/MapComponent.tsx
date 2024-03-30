@@ -1,59 +1,86 @@
-import React, { useEffect, useRef, useState } from "react";
-import { UseFormSetValue } from "react-hook-form";
-import { MapContainer, TileLayer } from "react-leaflet";
-import { DraggableMarker } from "./MapDrawer";
-
-interface MapComponentProps {
-  initialPosition?: L.LatLngExpression;
-  setValue: UseFormSetValue<{
-    lat: number;
-    lon: number;
-  }>;
-}
+import * as L from "leaflet";
+import React, { useEffect, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { supabase } from "~/lib/client";
+import { useToast } from "./ui/use-toast";
+import { formatDistanceToNow } from "date-fns";
+import { MapComponentProps, customIcon } from "./MapDrawer";
 
 const MapComponent: React.FC<MapComponentProps> = ({
   initialPosition = [18.514707, -72.276647],
-  setValue,
 }) => {
-  const [markerPosition, setMarkerPosition] =
-    useState<L.LatLngExpression>(initialPosition);
-  const mapRef = useRef<L.Map | null>(null);
+  const { toast } = useToast();
+  const [reports, setReports] = useState<any[]>([]);
 
   useEffect(() => {
-    if (markerPosition) {
-      setValue("lat", Number(markerPosition[0]));
-      setValue("lon", Number(markerPosition[1]));
+    async function fetchReports() {
+      const { data, error } = await supabase.from("reports").select("*");
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        setReports(data);
+      }
     }
-  }, [markerPosition, setValue]);
 
-  useEffect(() => {
-    if (initialPosition && mapRef.current) {
-      mapRef.current.flyTo(initialPosition, 18);
-      setMarkerPosition(initialPosition);
-    }
-  }, [initialPosition]);
+    fetchReports();
+  }, []);
+
+  function MultipleMarkers() {
+    return reports.map(({ id, name, created_at, lat, lon, category }) => {
+      return (
+        <Marker
+          key={id}
+          position={[lat, lon]}
+          icon={
+            category === "default"
+              ? customIcon
+              : L.icon({
+                  iconUrl: `/icons/${category}.svg`,
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 32],
+                  popupAnchor: [0, -32],
+                })
+          }
+        >
+          {category !== "default" && (
+            <Popup minWidth={90}>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm">{name}</span>
+                <span className="text-xs">
+                  {formatDistanceToNow(created_at)} ago
+                </span>
+              </div>
+            </Popup>
+          )}
+        </Marker>
+      );
+    });
+  }
 
   return (
-    <div data-vaul-no-drag className="relative space-y-2 p-4 pb-0">
-      <MapContainer
-        center={initialPosition}
-        zoom={18}
-        ref={mapRef}
-        scrollWheelZoom={false}
-        id="map"
-        style={{ height: "400px", width: "100%", borderRadius: 12 }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <DraggableMarker
-          initialPosition={markerPosition ?? initialPosition}
-          setMarkerPosition={setMarkerPosition}
-          setValue={setValue}
-        />{" "}
-      </MapContainer>
-    </div>
+    <MapContainer
+      center={initialPosition}
+      zoom={13}
+      scrollWheelZoom={false}
+      id="map"
+      style={{
+        position: "relative",
+        height: "400px",
+        zIndex: 1,
+        width: "100%",
+        borderRadius: 12,
+      }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MultipleMarkers />
+      {/* <DraggableMarker /> */}
+    </MapContainer>
   );
 };
 

@@ -26,9 +26,5 @@ export default function MapInput() {
     },
   });
 
-  return (
-    <div className="max-4xl w-full">
-      <MapComponent setValue={form.setValue} />
-    </div>
-  );
+  return <MapComponent />;
 }
