@@ -1,11 +1,11 @@
 {
-  "id": "39ba5c13-e061-4019-8aa3-fa0e5f04d5bb",
+  "id": "60df60fb-d6b3-42d2-a09e-a029d3d99488",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "unity-updates_post": {
-      "name": "unity-updates_post",
+    "posts": {
+      "name": "posts",
       "schema": "",
       "columns": {
         "id": {
@@ -68,7 +68,7 @@
         "name_idx": {
           "name": "name_idx",
           "columns": [
-            "name"
+            "created_at"
           ],
           "isUnique": false
         }

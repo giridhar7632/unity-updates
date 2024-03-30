@@ -4,7 +4,7 @@
 import { sql } from "drizzle-orm";
 import {
   index,
-  pgTableCreator,
+  pgTable,
   serial,
   timestamp,
   varchar,
@@ -18,10 +18,9 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `unity-updates_${name}`);
 
-export const posts = createTable(
-  "post",
+export const posts = pgTable(
+  "posts",
   {
     id: serial("id").primaryKey(),
     lat: numeric("lat").notNull(),
@@ -36,6 +35,6 @@ export const posts = createTable(
     updatedAt: timestamp("updatedAt"),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    nameIndex: index("name_idx").on(example.createdAt),
   }),
 );

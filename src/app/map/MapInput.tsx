@@ -14,8 +14,8 @@ export default function MapInput() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      lat: 51.505,
-      lon: -0.09,
+      lat: 18.594,
+      lon: 72.307,
     },
   });
 

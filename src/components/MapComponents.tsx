@@ -23,7 +23,6 @@ import {
 import { Button } from "~/components/ui/button";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
-import { debounce } from "lodash";
 import { type UseFormSetValue } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { Icons } from "./Icons";
@@ -32,11 +31,6 @@ import { useToast } from "./ui/use-toast";
 interface MapComponentProps {
   initialPosition?: L.LatLngExpression;
   setValue: UseFormSetValue<>;
-}
-
-interface SearchResult {
-  lat: string;
-  lon: string;
 }
 
 const iconOptions: L.IconOptions = {
@@ -48,7 +42,7 @@ const iconOptions: L.IconOptions = {
 const customIcon: L.Icon = L.icon(iconOptions);
 
 function DraggableMarker({
-  initialPosition = [51.505, -0.09],
+  initialPosition = [18.514707, -72.276647],
   setValue,
 }: MapComponentProps & {
   setMarkerPosition: (position: L.LatLngExpression) => void;
@@ -72,6 +66,7 @@ function DraggableMarker({
           setPosition(newPosition);
           setValue("lat", newPosition.lat);
           setValue("lon", newPosition.lng);
+          console.log(newPosition);
         }
       },
     }),
@@ -80,6 +75,7 @@ function DraggableMarker({
 
   useEffect(() => {
     if (position !== initialPosition) {
+      console.log(initialPosition);
       setPosition(initialPosition);
     }
   }, [initialPosition]);
@@ -102,7 +98,7 @@ function DraggableMarker({
 }
 
 export const MapComponent: React.FC<MapComponentProps> = ({
-  initialPosition = [51.505, -0.09],
+  initialPosition = [18.514707, -72.276647],
   setValue,
 }) => {
   const [markerPosition, setMarkerPosition] =
@@ -123,26 +119,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     }
   }, [initialPosition]);
 
-  const handleSearch = debounce(async (query: string) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${query}&format=json`,
-    );
-    const data: SearchResult[] = await response.json();
-
-    if (data.length > 0) {
-      const { lat, lon } = data[0];
-      const latLng: L.LatLngExpression = [parseFloat(lat), parseFloat(lon)];
-      mapRef.current?.flyTo(latLng, 18);
-    }
-  }, 500);
-
   return (
     <div data-vaul-no-drag className="relative space-y-2 p-4 pb-0">
-      <Input
-        type="text"
-        placeholder="Search places..."
-        onChange={(e) => handleSearch(e.target.value)}
-      />
       <MapContainer
         center={initialPosition}
         zoom={18}
@@ -166,7 +144,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 };
 
 export const MapDrawer: React.FC<MapComponentProps> = ({
-  initialPosition = [18.5944, -72.3074],
+  initialPosition = [18.514707, -72.276647],
   setValue,
 }) => {
   const [markerPosition, setMarkerPosition] =
@@ -201,19 +179,6 @@ export const MapDrawer: React.FC<MapComponentProps> = ({
     );
   }
 
-  const handleSearch = debounce(async (query: string) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${query}&format=json`,
-    );
-    const data: SearchResult[] = await response.json();
-
-    if (data.length > 0) {
-      const { lat, lon } = data[0];
-      const latLng: L.LatLngExpression = [parseFloat(lat), parseFloat(lon)];
-      mapRef.current?.flyTo(latLng, 18);
-    }
-  }, 500);
-
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -223,10 +188,6 @@ export const MapDrawer: React.FC<MapComponentProps> = ({
         <div className="mx-auto w-full max-w-4xl">
           <DrawerHeader>
             <DrawerTitle>Pick the location</DrawerTitle>
-            <DrawerDescription>
-              You can also use the search option to find surrounding famous
-              places.
-            </DrawerDescription>
           </DrawerHeader>
 
           <Button
@@ -244,11 +205,6 @@ export const MapDrawer: React.FC<MapComponentProps> = ({
           </Button>
 
           <div data-vaul-no-drag className="relative space-y-2 p-4 pb-0">
-            <Input
-              type="text"
-              placeholder="Search places..."
-              onChange={(e) => handleSearch(e.target.value)}
-            />
             <MapContainer
               center={initialPosition}
               zoom={13}

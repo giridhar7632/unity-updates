@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "unity-updates_post" (
+CREATE TABLE IF NOT EXISTS "posts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"lat" numeric NOT NULL,
 	"lon" numeric NOT NULL,
@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS "unity-updates_post" (
 	"updatedAt" timestamp
 );
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "name_idx" ON "unity-updates_post" ("name");
+CREATE INDEX IF NOT EXISTS "name_idx" ON "posts" ("created_at");
