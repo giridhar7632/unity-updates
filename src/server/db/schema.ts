@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
   text,
+  integer,
   numeric,
 } from "drizzle-orm/pg-core";
 
@@ -19,8 +20,8 @@ import {
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-export const posts = pgTable(
-  "posts",
+export const reports = pgTable(
+  "reports",
   {
     id: serial("id").primaryKey(),
     lat: numeric("lat").notNull(),
@@ -29,6 +30,7 @@ export const posts = pgTable(
     number: text("number").notNull(),
     category: text("category").notNull(),
     description: text("description"),
+    upvotes: integer("upvotes").default(0),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

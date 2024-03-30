@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Icons } from "./Icons";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-provider";

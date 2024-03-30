@@ -1,15 +1,31 @@
 "use server";
 
-import { desc } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "~/server/db";
-import { posts } from "~/server/db/schema";
+import { reports } from "~/server/db/schema";
 
 export async function addReport(values) {
-  await db.insert(posts).values(values);
+  await db.insert(reports).values(values);
   revalidatePath("/report");
 }
 
 export async function getReports() {
-  return db.select().from(posts).orderBy(desc(posts.createdAt));
+  return db.select().from(reports).orderBy(desc(reports.createdAt));
+}
+
+export async function upvoteReport(id) {
+  await db
+    .update(reports)
+    .set({ upvotes: sql`${reports.upvotes} + 1` })
+    .where(eq(reports.id, id));
+  revalidatePath("/report");
+}
+
+export async function rmUpvote(id) {
+  await db
+    .update(reports)
+    .set({ upvotes: sql`${reports.upvotes} - 1` })
+    .where(eq(reports.id, id));
+  revalidatePath("/report");
 }

@@ -14,7 +14,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -24,13 +23,23 @@ import { Button } from "~/components/ui/button";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 import { type UseFormSetValue } from "react-hook-form";
-import { Input } from "~/components/ui/input";
 import { Icons } from "./Icons";
 import { useToast } from "./ui/use-toast";
 
 interface MapComponentProps {
   initialPosition?: L.LatLngExpression;
-  setValue: UseFormSetValue<>;
+  setValue: UseFormReturn<
+    {
+      number: string;
+      lat: number;
+      lon: number;
+      name: string;
+      category: string;
+      description: string;
+    },
+    any,
+    undefined
+  >;
 }
 
 const iconOptions: L.IconOptions = {
@@ -41,7 +50,7 @@ const iconOptions: L.IconOptions = {
 };
 const customIcon: L.Icon = L.icon(iconOptions);
 
-function DraggableMarker({
+export function DraggableMarker({
   initialPosition = [18.514707, -72.276647],
   setValue,
 }: MapComponentProps & {
@@ -97,53 +106,7 @@ function DraggableMarker({
   );
 }
 
-export const MapComponent: React.FC<MapComponentProps> = ({
-  initialPosition = [18.514707, -72.276647],
-  setValue,
-}) => {
-  const [markerPosition, setMarkerPosition] =
-    useState<L.LatLngExpression>(initialPosition);
-  const mapRef = useRef<L.Map | null>(null);
-
-  useEffect(() => {
-    if (markerPosition) {
-      setValue("lat", Number(markerPosition[0]));
-      setValue("lon", Number(markerPosition[1]));
-    }
-  }, [markerPosition, setValue]);
-
-  useEffect(() => {
-    if (initialPosition && mapRef.current) {
-      mapRef.current.flyTo(initialPosition, 18);
-      setMarkerPosition(initialPosition);
-    }
-  }, [initialPosition]);
-
-  return (
-    <div data-vaul-no-drag className="relative space-y-2 p-4 pb-0">
-      <MapContainer
-        center={initialPosition}
-        zoom={18}
-        ref={mapRef}
-        scrollWheelZoom={false}
-        id="map"
-        style={{ height: "400px", width: "100%", borderRadius: 12 }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <DraggableMarker
-          initialPosition={markerPosition ?? initialPosition}
-          setMarkerPosition={setMarkerPosition}
-          setValue={setValue}
-        />{" "}
-      </MapContainer>
-    </div>
-  );
-};
-
-export const MapDrawer: React.FC<MapComponentProps> = ({
+const MapDrawer: React.FC<MapComponentProps> = ({
   initialPosition = [18.514707, -72.276647],
   setValue,
 }) => {
@@ -239,3 +202,5 @@ export const MapDrawer: React.FC<MapComponentProps> = ({
     </Drawer>
   );
 };
+
+export default MapDrawer;

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,13 +21,17 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { supabase } from "~/lib/client";
 import { useRouter } from "next/navigation";
 import { Textarea } from "~/components/ui/textarea";
 import { Label } from "~/components/ui/label";
-import { MapDrawer } from "~/components/MapComponents";
 import { useToast } from "~/components/ui/use-toast";
 import { addReport } from "~/app/actions";
+import dynamic from "next/dynamic";
+
+const MapDrawer = dynamic(() => import("~/components/MapDrawer"), {
+  ssr: false,
+  loading: () => <p className="text-xs text-neutral-500">Loading map...</p>,
+});
 
 const formSchema = z.object({
   lat: z.number().max(180),
